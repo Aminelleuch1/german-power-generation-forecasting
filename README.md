@@ -12,7 +12,7 @@ model sees not only how much power is needed, but what gas, coal, and carbon cos
 ```
                  ENTSO-E                     Open-Meteo
           (load, generation,              (weather archive
-        capacity, hydro forecast)          and forecast)
+         capacity, hydro actuals)          and forecast)
                     │                            │
                     └──────────┬─────────────────┘
                                ▼
@@ -30,7 +30,7 @@ model sees not only how much power is needed, but what gas, coal, and carbon cos
               + calendar and Fourier time features
                                ▼
       ┌────────────────────────────────────────────────┐
-      │  6. Multi-output XGBoost                        │
+      │  5. Multi-output XGBoost                        │
       │     → Fossil Gas · Hard coal · Lignite (MW)     │
       └────────────────────────────────────────────────┘
                                ▼
@@ -55,7 +55,7 @@ model sees not only how much power is needed, but what gas, coal, and carbon cos
 
 | Source | What it provides | Access |
 |---|---|---|
-| **[ENTSO-E Transparency Platform](https://transparency.entsoe.eu/)** | Actual generation by fuel type, actual load, installed capacity, hydro day-ahead forecast (bidding zone `DE`) | Free token — see [`.env.example`](.env.example) |
+| **[ENTSO-E Transparency Platform](https://transparency.entsoe.eu/)** | Actual generation by fuel type, actual load, installed capacity (bidding zone `DE`) | Free token — see [`.env.example`](.env.example) |
 | **[Open-Meteo](https://open-meteo.com/)** | Weather archive, forecast, historical forecasts, and previous model runs | No key required |
 | **Commodity prices** | TTF gas futures, API2 coal, EUA carbon allowances | CSVs under `data/`, optionally synced from Supabase |
 
@@ -117,11 +117,20 @@ sine/cosine pairs on the daily, monthly, and annual cycles, which give the trees
 smooth, continuous encoding of periodicity instead of forcing them to split on raw
 hour and month integers.
 
-### 5. Hydro
+### Hydro — a trailing mean, not a model
 
-Taken directly from the ENTSO-E day-ahead generation forecast rather than modelled.
+Run-of-river hydro is not modelled. `predict_hydro` averages the last three days of
+actual run-of-river generation from ENTSO-E and holds that single value flat across
+the whole 16-day horizon — a persistence estimate, not a forecast.
 
-### 6. Fossil split and CO₂
+This is a deliberate simplicity trade-off rather than an oversight: German
+run-of-river output is small and slow-moving relative to wind and solar, so a flat
+trailing mean costs little accuracy in the residual while avoiding a model that would
+need river-flow and catchment-precipitation data to beat it. It is, however, the
+weakest link in the chain during flood or drought weeks, when actual output departs
+sharply from its recent average.
+
+### 5. Fossil split and CO₂
 
 A multi-output XGBoost predicts the three fossil series simultaneously from residual
 load, fuel prices, and time features. Price features are engineered in
