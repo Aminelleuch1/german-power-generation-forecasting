@@ -1,0 +1,30 @@
+# ── Secrets ─────────────────────────────────────────────────
+.env
+*.pem
+
+# ── Data ────────────────────────────────────────────────────
+# All CSVs under data/ are fetched from ENTSO-E / Open-Meteo / Supabase
+# by data_completer.py — see "Rebuilding the data directory" in the README.
+data/
+
+# ── Model artefacts and training logs ───────────────────────
+models/
+darts_logs/
+*.pt
+*.ckpt
+*.pth
+
+# ── Caches ──────────────────────────────────────────────────
+.cache.sqlite
+*.sqlite
+__pycache__/
+*.py[cod]
+
+# ── Environments / editors / OS ─────────────────────────────
+.venv/
+venv/
+env/
+.DS_Store
+.vscode/
+.idea/
+.ipynb_checkpoints/

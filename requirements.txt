@@ -1,0 +1,23 @@
+# ── Core ────────────────────────────────────────────────────
+numpy>=1.26
+pandas>=2.2
+matplotlib>=3.9
+seaborn>=0.13
+requests>=2.32
+pytz>=2024.1
+
+# ── Data sources ────────────────────────────────────────────
+entsoe-py>=0.6.8      # ENTSO-E Transparency Platform client
+supabase>=2.9         # commodity price store (optional, see .env.example)
+holidays>=0.58        # German public holidays as a load feature
+
+# ── Modelling ───────────────────────────────────────────────
+scikit-learn>=1.5
+statsmodels>=0.14
+xgboost>=2.1
+optuna>=4.0           # hyperparameter search (Training_Inference.py)
+
+# N-BEATS for load forecasting. darts pulls in pytorch-lightning;
+# install a CUDA build of torch first if you want GPU training.
+darts>=0.30
+torch>=2.0
