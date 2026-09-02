@@ -22,7 +22,6 @@ model sees not only how much power is needed, but what gas, coal, and carbon cos
       │  2. Solar         XGBoost → capacity factor     │
       │  3. Wind onshore  XGBoost → capacity factor     │
       │  4. Wind offshore XGBoost → capacity factor     │
-      │  5. Hydro         ENTSO-E day-ahead forecast    │
       └────────────────────────────────────────────────┘
                                ▼
               Residual load = demand − renewables
